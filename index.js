@@ -25,6 +25,7 @@ const mongoClient = await connectToMongoDB()
 
 const db = mongoClient.db("studio-space")
 const collection = db.collection("destination")
+const bookingcollections =db.collection("booking")
 
 app.post('/create-studio',async(req,res) => {
 
@@ -41,6 +42,11 @@ app.get('/destination/:id',async(req,res) => {
   const {id} = req.params
   const result = await collection.findOne({_id:new ObjectId(id)})
   res.send({result})
+})
+app.post('/booking', async(req,res) => {
+  const data = req.body
+  const result = await bookingcollections.insertOne(data)
+  res.send(result)
 })
 
 app.get('/', (req,res) => {
