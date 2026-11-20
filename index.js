@@ -38,7 +38,15 @@ app.get('/destination',async(req,res) => {
     const result = await collection.find().toArray()
     res.send(result)
 })
-app.get('/destination/:id',async(req,res) => {
+app.get('/destination/:id',(req,res,next) => {
+  const authHeader = req.headers.authorization
+
+  if(authHeader === "user Logged in") {
+    return res.status(401).send({msg:'Unauthorized'})
+  }
+   console.log(" i am middle")
+  next();
+},async(req,res) => {
   const {id} = req.params
   const result = await collection.findOne({_id:new ObjectId(id)})
   res.send({result})
@@ -46,6 +54,12 @@ app.get('/destination/:id',async(req,res) => {
 app.post('/booking', async(req,res) => {
   const data = req.body
   const result = await bookingcollections.insertOne(data)
+  res.send(result)
+})
+
+app.get('/my-booking/:email',async(req,res) => {
+  const {email} = req.params
+  const result =await bookingcollections.find({email:email}).toArray()
   res.send(result)
 })
 
